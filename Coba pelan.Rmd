@@ -1,0 +1,736 @@
+---
+title: "Coba Pelan RF"
+author: "Nindia Priscilla"
+date: '`r Sys.Date()`'
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+```
+
+# Part 1 Persiapan raster dan vektor
+
+## Inisialisasi packages
+
+```{r}
+library(sf)
+library(raster)
+library(ExtractTrainData)
+```
+
+## Input raster
+
+```{r}
+rainfall1 <- raster("1_rainfall.tif") %>% calc(fun = function(x) as.numeric(x))
+rainfall2 <- raster("2_rainfall.tif") %>% calc(fun = function(x) as.numeric(x))
+rainfall3 <- raster("3_rainfall.tif") %>% calc(fun = function(x) as.numeric(x))
+rainfall4 <- raster("4_rainfall.tif") %>% calc(fun = function(x) as.numeric(x))
+rainfall5 <- raster("5_rainfall.tif") %>% calc(fun = function(x) as.numeric(x))
+rainfall6 <- raster("6_rainfall.tif") %>% calc(fun = function(x) as.numeric(x))
+rainfall7 <- raster("7_rainfall.tif") %>% calc(fun = function(x) as.numeric(x))
+rainfall8 <- raster("8_rainfall.tif") %>% calc(fun = function(x) as.numeric(x))
+rainfall9 <- raster("9_rainfall.tif") %>% calc(fun = function(x) as.numeric(x))
+rainfall10 <- raster("10_rainfall.tif") %>% calc(fun = function(x) as.numeric(x))
+rainfall11 <- raster("11_rainfall.tif") %>% calc(fun = function(x) as.numeric(x))
+rainfall12 <- raster("12_rainfall.tif") %>% calc(fun = function(x) as.numeric(x))
+rainfall13<- raster("2024_RAINFALL500.tif") %>% calc(fun = function(x) as.numeric(x))
+
+road <- raster("road.tif") %>% calc(fun = function(x) as.numeric(x))
+
+landcover2021 <- raster("lc2021.tif") %>% ratify()
+landcover2022 <- raster("lc2022.tif") %>% ratify()
+landcover2023 <- raster("lc2023.tif") %>% ratify()
+landcover2024 <- raster("2024_LC500.tif") %>% ratify()
+
+lst1 <- raster("1_lst.tif") %>% calc(fun = function(x) as.numeric(x))
+lst2 <- raster("2_lst.tif") %>% calc(fun = function(x) as.numeric(x))
+lst3 <- raster("3_lst.tif") %>% calc(fun = function(x) as.numeric(x))
+lst4 <- raster("4_lst.tif") %>% calc(fun = function(x) as.numeric(x))
+lst5 <- raster("5_lst.tif") %>% calc(fun = function(x) as.numeric(x))
+lst6 <- raster("6_lst.tif") %>% calc(fun = function(x) as.numeric(x))
+lst7 <- raster("7_lst.tif") %>% calc(fun = function(x) as.numeric(x))
+lst8 <- raster("8_lst.tif") %>% calc(fun = function(x) as.numeric(x))
+lst9 <- raster("9_lst.tif") %>% calc(fun = function(x) as.numeric(x))
+lst10 <- raster("10_lst.tif") %>% calc(fun = function(x) as.numeric(x))
+lst11 <- raster("11_lst.tif") %>% calc(fun = function(x) as.numeric(x))
+lst12 <- raster("12_lst.tif") %>% calc(fun = function(x) as.numeric(x))
+lst13 <- raster("2024_LST500.tif") %>% calc(fun = function(x) as.numeric(x))
+
+
+ndvi1 <- raster("1_ndvi.tif") %>% calc(fun = function(x) as.numeric(x))
+ndvi2 <- raster("2_ndvi.tif") %>% calc(fun = function(x) as.numeric(x))
+ndvi3 <- raster("3_ndvi.tif") %>% calc(fun = function(x) as.numeric(x))
+ndvi4 <- raster("4_ndvi.tif") %>% calc(fun = function(x) as.numeric(x))
+ndvi5 <- raster("5_ndvi.tif") %>% calc(fun = function(x) as.numeric(x))
+ndvi6 <- raster("6_ndvi.tif") %>% calc(fun = function(x) as.numeric(x))
+ndvi7 <- raster("7_ndvi.tif") %>% calc(fun = function(x) as.numeric(x)) 
+ndvi8 <- raster("8_ndvi.tif") %>% calc(fun = function(x) as.numeric(x))
+ndvi9 <- raster("9_ndvi.tif") %>% calc(fun = function(x) as.numeric(x))
+ndvi10 <- raster("10_ndvi.tif") %>% calc(fun = function(x) as.numeric(x))
+ndvi11 <- raster("11_ndvi.tif") %>% calc(fun = function(x) as.numeric(x))
+ndvi12 <- raster("12_ndvi.tif") %>% calc(fun = function(x) as.numeric(x))
+ndvi13 <- raster("2024_NDVI500.tif") %>% calc(fun = function(x) as.numeric(x))
+
+river <- raster("river.tif") %>% calc(fun = function(x) as.numeric(x))
+dem <- raster("dem.tif") %>% calc(fun = function(x) as.numeric(x))
+pop <- raster("worldpop.tif") %>% calc(fun = function(x) as.numeric(x))
+soil <- raster("soilmoisture.tif") %>% calc(fun = function(x) as.numeric(x))
+soil2024 <- raster("2024_SOIL500.tif") %>% calc(fun = function(x) as.numeric(x))
+irg2021 <- raster("IRG2021.tif") %>% calc(fun = function(x) as.numeric(x))
+irg2022 <- raster("IRG20223.tif") %>% calc(fun = function(x) as.numeric(x))
+
+```
+
+## Stack raster
+
+```{r}
+data1 <- stack(rainfall1,lst1,ndvi1,river,road, dem, pop, soil, irg2021, landcover2021) 
+data2 <- stack(rainfall2,lst2,ndvi2,river,road, dem, pop, soil, irg2021, landcover2021)
+data3 <- stack(rainfall3,lst3,ndvi3,river,road, dem, pop, soil, irg2021, landcover2021)
+data4 <- stack(rainfall4,lst4,ndvi4,river,road, dem, pop, soil, irg2021, landcover2021)
+data5 <- stack(rainfall5,lst5,ndvi5,river,road, dem, pop, soil, irg2022, landcover2022)
+data6 <- stack(rainfall6,lst6,ndvi6,river,road, dem, pop, soil, irg2022, landcover2022)
+data7 <- stack(rainfall7,lst7,ndvi7,river,road, dem, pop, soil, irg2022, landcover2022)
+data8 <- stack(rainfall8,lst8,ndvi8,river,road, dem, pop, soil, irg2022, landcover2022)
+data9 <- stack(rainfall9,lst9,ndvi9,river,road, dem, pop, soil, irg2022, landcover2023)
+data10 <- stack(rainfall10,lst10,ndvi10,river,road, dem, pop, soil, irg2022, landcover2023)
+data11 <- stack(rainfall11,lst11,ndvi11,river,road, dem, pop, soil, irg2022, landcover2023)
+data12 <- stack(rainfall12,lst12,ndvi12,river,road, dem, pop, soil, irg2022, landcover2023)
+data2024 <- stack(rainfall13,lst13,ndvi13,river,road, dem, pop, soil2024, irg2022, landcover2024)
+
+names(data1) <- names(data2) <- 
+  names(data3) <- names(data4) <- names(data5) <- 
+  names(data6) <- names(data7) <- names(data8) <- 
+  names(data9) <- names(data10) <- names(data11) <- 
+  names(data12) <- names(data2024) <- c("rainfall", "lst", "ndvi", "river", "road","dem", "worldpop", "soilmoisture", "IRG", "lc")
+
+```
+
+## Input vector
+```{r}
+features1 <- st_read("PERIODE1.shp") %>% st_cast("POINT")
+features2 <- st_read("PERIODE2B.shp") %>% st_cast("POINT")
+features3 <- st_read("PERIODE3.shp") %>% st_cast("POINT")
+features4 <- st_read("PERIODE4.shp") %>% st_cast("POINT")
+features5 <- st_read("PERIODE5.shp") %>% st_cast("POINT")
+features6 <- st_read("PERIODE6.shp") %>% st_cast("POINT")
+features7 <- st_read("PERIODE7.shp") %>% st_cast("POINT")
+features8 <- st_read("PERIODE8.shp") %>% st_cast("POINT")
+features9 <- st_read("PERIODE9.shp") %>% st_cast("POINT")
+features10 <- st_read("PERIODE10.shp") %>% st_cast("POINT")
+features11 <- st_read("PERIODE11.shp") %>% st_cast("POINT")
+features12 <- st_read("PERIODE12.shp") %>% st_cast("POINT")
+```
+
+## Ubah jadi data frame
+
+```{r}
+## Buat fungsi ekst untuk mempersingkat ektraksi untuk 12 data frame point
+
+ekst <- function(point,raster){
+  ExtractByPoint(img = raster, point.shp = point, In.colName = "VERSION", Out.colName = "HOTSPOT")
+}
+
+## Running ekstakssi dengan fungsi ekst() dan gabungkan dengan fungsi rbind(), sebelum itu untuk setiap ekst
+
+dataekstrak <- rbind(
+  ekst(features1,data1),
+  ekst(features2,data2),
+  ekst(features3,data3),
+  ekst(features4,data4),
+  ekst(features5,data5),
+  ekst(features6,data6),
+  ekst(features7,data7),
+  ekst(features8,data8),
+  ekst(features9,data9),
+  ekst(features10,data10),
+  ekst(features11,data11),
+  ekst(features12,data12)
+)
+
+dataekstrak
+```
+
+# Part 2 Cleaning Data Ekstraksi
+
+## Cek tipe data
+
+```{r}
+str(dataekstrak)
+```
+
+Masih ada beberpa yang kurang sesuai, ganti menjadi tipe data sesuai, pertama cek unik dari hotspot dan lc yang kategorik
+
+```{r}
+unique(dataekstrak$HOTSPOT)
+unique(dataekstrak$lc)
+```
+
+Kemudian perbiaki tipe data
+
+```{r}
+dataekstrak2 <- dataekstrak %>%
+  mutate(
+    HOTSPOT = factor(HOTSPOT,c("1","2")),
+    lc = factor(lc,c("1","2","5","7","11"))
+  )
+```
+
+## Cek missing value
+
+```{r}
+library(naniar)
+miss_var_summary(dataekstrak2)
+```
+
+Masih ada missing value di lst maka kita imputasi dengan rata-rata
+
+```{r}
+dataekstrak3 <- dataekstrak2 %>%
+  mutate(
+    lst = ifelse(
+      is.na(lst) == T,
+      mean(lst,na.rm = T),
+      lst
+    )
+  )
+summary(dataekstrak3)
+```
+
+## Standarisasi (sekalian buat id)
+
+```{r}
+minmax <- function(x){(x-min(x))/(max(x)-min(x))}
+
+dataekstrak4 <- dataekstrak3 %>%
+  mutate(
+    across(where(is.double),minmax),
+    id = 1:n()
+  )
+summary(dataekstrak4)
+# dataekstrak4%>% group_by(HOTSPOT) %>% summarise(n())
+```
+
+# Part 3 Eksplorasi
+
+## Cek korelasi
+
+```{r}
+library(psych)
+cor.plot(dataekstrak4 %>% dplyr::select(-c(HOTSPOT,lc,id)),upper = F)
+```
+
+
+# Part 4 Pemodelan
+
+## Splitting data
+
+```{r}
+library(caret)
+library(lattice)
+set.seed(123)
+id_train <- createDataPartition(y=dataekstrak4$HOTSPOT,p = 0.7,list = F)
+data_train <- dataekstrak4[id_train,] %>% dplyr::select(-id)
+data_test <- dataekstrak4[-id_train,] %>% dplyr::select(-id)
+summary(data_train)
+
+data_train
+
+
+```
+
+```{r}
+# Menyimpan hasil cross-validation ke file Excel
+write_xlsx(data_train, "D:/undip/bismillah magang/BRGM/KUDETA ALAM SEMESTA/DATA/draft/data_train.xlsx")
+write_xlsx(data_test, "D:/undip/bismillah magang/BRGM/KUDETA ALAM SEMESTA/DATA/draft/data_test.xlsx")
+write.csv(data_train,"D:/undip/bismillah magang/BRGM/KUDETA ALAM SEMESTA/DATA/draft/data_train.csv")
+write.csv(data_test,"D:/undip/bismillah magang/BRGM/KUDETA ALAM SEMESTA/DATA/draft/data_test.csv")
+```
+
+## Random forest base
+
+```{r}
+library(randomForest)
+
+set.seed(123)
+model0 <- randomForest(HOTSPOT ~ ., data = data_train, ntree = 10000)
+model0
+```
+
+## Penentuan optimal ntrees
+
+```{r}
+plot(model0, main = "Error vs ntrees in base model")
+```
+
+Dapat terlihat error mulai stabil pada ntrees pada antara 4000-6000 tree sehingga kita ambil angka 5000 sebagai ntree optimal.
+
+## Penentuan mtry
+
+```{r}
+set.seed(123)
+opt.mtry <- tuneRF(
+  data_train[,-11], ## x var
+  data_train[,11], ## y var
+  stepFactor = 1.5,
+  ntreeTry = 5000,
+  trace = T,
+  improve = 0.01
+)
+```
+
+
+terlihat OOB tak banyak berubah maka mtry optimal = 2
+
+## Model terbaik
+```{r}
+library(randomForest)
+
+# Modifikasi Random Forest dengan parameter kontrol
+model1 <- randomForest(
+  HOTSPOT ~ ., 
+  data = data_train, 
+  ntree = 1000,          # Jumlah pohon lebih kecil untuk pengujian awal
+  mtry = floor(sqrt(ncol(data_train) - 1)), # Jumlah fitur yang dipilih untuk setiap split
+  importance = TRUE, 
+  nodesize = 5,          # Ukuran minimal node (semakin besar, semakin sederhana model)
+  maxnodes = 30          # Membatasi jumlah maksimum node
+)
+
+# Menampilkan ringkasan model
+print(model1)
+
+# Menampilkan pentingnya variabel
+importance(model1)
+varImpPlot(model1)
+
+asli_train <- data_train$HOTSPOT
+confusionMatrix(predict(model1,data_train),asli_train)
+
+asli_test <- data_test$HOTSPOT
+confusionMatrix(predict(model1,data_test),asli_test)
+
+```
+
+
+```{r}
+model1 <- randomForest(
+  HOTSPOT ~ ., 
+  data = data_train, 
+  ntree = 5000,
+  mtry = 2,
+  importance = T
+)
+model1
+```
+
+```{r}
+
+# Set parameters untuk cross-validation
+k <- 10 # jumlah folds
+set.seed(123) 
+
+# Randomly assign each row in data to a fold
+folds <- sample(1:k, nrow(data_train), replace = TRUE)
+
+# Initialize vector to store evaluation metrics
+accuracy <- c()
+
+# Perform k-fold cross-validation
+for (i in 1:k) {
+  # Split the data into training and testing sets for the current fold
+  train_data <- data_train[folds != i, ]
+  test_data <- data_train[folds == i, ]
+  
+  # Train the Random Forest model on the training set
+  rf_model <- randomForest(
+    HOTSPOT ~ ., 
+    data = train_data, 
+    ntree = 5000, 
+    mtry = 2, 
+    importance = TRUE
+  )
+  
+  # Predict on the test set
+  predictions <- predict(rf_model, test_data)
+  
+  # Calculate accuracy for the current fold
+  fold_accuracy <- sum(predictions == test_data$HOTSPOT) / nrow(test_data)
+  accuracy <- c(accuracy, fold_accuracy)
+}
+
+# Calculate and print the average accuracy and standard deviation across all folds
+mean_accuracy <- mean(accuracy)
+sd_accuracy <- sd(accuracy)
+
+cat("Average Accuracy:", mean_accuracy, "\n")
+cat("Standard Deviation of Accuracy:", sd_accuracy, "\n")
+
+```
+
+```{r}
+library(pROC)
+
+cross_validation <- function(dataekstrak4, rf_model, k = 10) {
+  folds <- cut(seq(1, nrow(dataekstrak4)), breaks = k, labels = FALSE)
+  fr  <- data.frame(
+    fold = 1:k,
+    acc.tr = rep(0,k),
+    auc.tr = rep(0,k),
+    acc.ts = rep(0,k),
+    auc.ts = rep(0,k)
+  )
+  data1b <- dataekstrak4 %>% filter(HOTSPOT == "1") %>% mutate(dum = 1:n())
+  data2b <- dataekstrak4 %>% filter(HOTSPOT == "2") %>% mutate(dum = 1:n())
+  datab <- rbind(data1b,data2b) %>% arrange(dum) %>% dplyr::select(-dum)
+  
+  for (i in 1:k) {
+    # Partisi data menjadi training dan testing berdasarkan fold
+    test_indices <- which(folds == i, arr.ind = TRUE)
+    test_data <- datab[test_indices, ]
+    train_data <- datab[-test_indices, ]
+    
+    # Evaluasi model dengan akurasi
+    fr$acc.tr[i] <- (confusionMatrix(predict(rf_model,train_data),train_data$HOTSPOT))$overall[1]
+    fr$acc.ts[i] <- (confusionMatrix(predict(rf_model,test_data),test_data$HOTSPOT))$overall[1]
+    
+    # Evaluasi model dengan AUC
+    ppr <- predict(rf_model, train_data, type = "prob")[,1]
+    pps <- predict(rf_model, test_data, type = "prob")[,1]
+    
+    fr$auc.tr[i] <- (roc(train_data$HOTSPOT,ppr))$auc[1]
+    fr$auc.ts[i] <- (roc(test_data$HOTSPOT,pps))$auc[1]
+    
+  }
+  
+  return(fr)
+}
+
+set.seed(123)
+cv <- cross_validation(dataekstrak4,model1) %>%
+    summarise(
+      m.acc.tr = mean(acc.tr),
+      m.acc.ts = mean(acc.ts),
+      m.auc.tr = mean(auc.tr),
+      m.auc.ts = mean(auc.ts),
+      sd.acc.tr = sd(acc.tr),
+      sd.acc.ts = sd(acc.ts),
+      sd.auc.tr = sd(auc.tr),
+      sd.auc.ts = sd(auc.ts),
+    )
+cv
+
+library(knitr)
+cv_results <- cross_validation(dataekstrak4, model1)
+kable(cv_results, caption = "Hasil Evaluasi Tiap Fold")
+
+# Install openxlsx jika belum ada
+install.packages("openxlsx")
+library(openxlsx)
+
+# Menyimpan hasil cross-validation ke file Excel
+wb <- createWorkbook()
+addWorksheet(wb, "CrossValidation")
+writeData(wb, "CrossValidation", cv_results)
+saveWorkbook(wb, "hasil_cross_validation.xlsx", overwrite = TRUE)
+
+
+```
+
+## Evaluasi
+
+### Evaluasi data training
+
+Cek confusion matrix
+
+```{r}
+asli_train <- data_train$HOTSPOT
+confusionMatrix(predict(model1,data_train),asli_train)
+```
+
+Akurasi 98.8% sangat baik
+
+Cek ROC AUC
+
+```{r}
+library(pROC)
+auc_rf_train <- roc(asli_train, model1$votes[,1])
+auc_rf_train
+```
+
+coba plotkan
+
+```{r}
+plot(auc_rf_train, main = "Kurva ROC Data Train Random Forest ", col = "blue", lwd = 2)
+```
+
+AUC = 0.96 sangat bagus
+
+### Evaluasi data testing
+
+Cek confusion matrix
+
+```{r}
+asli_test <- data_test$HOTSPOT
+confusionMatrix(predict(model1,data_test),asli_test)
+```
+
+Akurasi 92% sangat baik, selisih tidak jauh dari train maka tidak overfit.
+
+Cek ROC AUC
+
+```{r}
+library(pROC)
+auc_rf_test <- roc(asli_test, predict(model1, data_test, type = "prob")[,1])
+auc_rf_test
+```
+
+coba plotkan
+
+```{r}
+plot(auc_rf_test, main = "Kurva ROC Data Testing Random Forest ", col = "blue", lwd = 2)
+```
+
+```{r}
+# Train SVM model
+svm_model <- svm(target ~ ., data = train_data, kernel = "radial", cost = 1, gamma = 1 / ncol(train_data))
+
+# Predict and evaluate
+svm_preds <- predict(svm_model, test_data)
+
+# Confusion matrix
+confusionMatrix(svm_preds, test_data$target)
+
+```
+
+```{r}
+# Load necessary libraries
+library(tidyverse)
+library(caret)
+library(xgboost)
+library(pROC)
+
+# Assuming dataekstrak4 is already loaded in your environment
+# Ensure 'lc' is treated as a factor
+dataekstrak4$lc <- as.factor(dataekstrak4$lc)
+
+# Prepare the data
+set.seed(123)
+trainIndex <- createDataPartition(dataekstrak4$HOTSPOT, p = 0.7, list = FALSE)
+data_train <- dataekstrak4[trainIndex, ]
+data_test <- dataekstrak4[-trainIndex, ]
+
+X_train <- data_train %>% select(-HOTSPOT)
+y_train <- data_train$HOTSPOT
+X_test <- data_test %>% select(-HOTSPOT)
+y_test <- data_test$HOTSPOT
+
+# Convert data to matrix format for XGBoost
+dtrain <- xgb.DMatrix(data = model.matrix(~ . - 1, data = X_train), label = as.numeric(y_train) - 1)
+dtest <- xgb.DMatrix(data = model.matrix(~ . - 1, data = X_test), label = as.numeric(y_test) - 1)
+
+# Define the parameter grid for cross-validation
+param_grid <- list(
+  objective = "binary:logistic",
+  eval_metric = "logloss",
+  nrounds = 1000,
+  eta = 0.1,
+  max_depth = 6,
+  subsample = 0.8,
+  colsample_bytree = 0.8
+)
+
+# Perform cross-validation to find the best hyperparameters
+cv <- xgb.cv(
+  params = param_grid,
+  data = dtrain,
+  nfold = 5,
+  nrounds = param_grid$nrounds,
+  verbose = 1,
+  early_stopping_rounds = 10
+)
+
+# Train the final model with the best number of rounds
+best_nrounds <- cv$best_iteration
+final_model <- xgb.train(
+  params = param_grid,
+  data = dtrain,
+  nrounds = best_nrounds
+)
+
+# Predict on the test set
+y_pred <- predict(final_model, dtest)
+y_pred_class <- ifelse(y_pred > 0.5, 1, 0)
+
+# Ensure levels are consistent
+y_pred_class <- factor(y_pred_class, levels = levels(factor(y_test)))
+
+# Evaluate the model
+conf_matrix <- confusionMatrix(factor(y_pred_class), factor(y_test))
+accuracy <- conf_matrix$overall['Accuracy']
+roc_auc <- roc(y_test, y_pred)$auc
+
+print(conf_matrix)
+print(paste("Accuracy:", accuracy))
+print(paste("ROC AUC:", roc_auc))
+
+# Plot ROC curve
+roc_curve <- roc(y_test, y_pred)
+plot(roc_curve, main = "ROC Curve for XGBoost Model", col = "blue", lwd = 2)
+```
+
+
+
+AUC = 0.95 sangat bagus tidak jauh dari AUC train sehingga tidak overfit
+
+## VIF
+
+```{r}
+varImpPlot(model1,sort = T, n.var = 10)
+importance(model1)
+varUsed(model1)
+```
+
+coba packages lain
+
+```{r}
+library(vip)
+
+vip(model1)+ theme_classic() + labs(
+  title = "VIP Model RF"
+) + aes(fill="red") + theme(legend.position = "none")
+```
+
+coba cek pembasahan
+
+```{r}
+data_train %>%
+  dplyr::select(worldpop,HOTSPOT) %>%
+  ggplot(aes(y = worldpop, x = HOTSPOT, fill = "HOTSPOT" )) +
+  geom_boxplot()
+```
+
+```{r}
+dataekstrak4 %>%
+  ggplot(aes(y = rainfall, x = HOTSPOT, fill = "HOTSPOT" )) +
+  geom_boxplot()
+```
+
+# Part 5 Coba prediksi 
+
+Misalkan kita akan prediksi dari data3
+
+
+```{r}
+data2024a <- data2024
+prediksi2024<-predict(data2024a,model1,type='response',progress='text')
+writeRaster(prediksi2024, "cccbpred2024.tif", format = "GTiff",overwrite = T)
+```
+
+```{r}
+data24 <- data2024
+#for (i in 1:9) {
+#  data20b[[i]] <- scale(data20b[[i]])
+#}
+prediksi24<-predict(data24,model1,type='prob',progress='text')
+writeRaster(prediksi24, "iniprob2024.tif", format = "GTiff",overwrite = T)
+```
+```{r}
+data3b <- data2024
+min_max_transform <- function(raster_layer) {
+  min_val <- minValue(raster_layer) 
+  max_val <- maxValue(raster_layer) 
+  transformed_layer <- (raster_layer - min_val) / (max_val - min_val) 
+  return(transformed_layer)
+}
+for (i in 1:9) {
+  data3b[[i]] <- min_max_transform(data3b[[i]])
+}
+prediksi3b<-predict(data3b,model1,type='response',progress='text')
+writeRaster(prediksi3b, "responsecobadata2024i.tif", format = "GTiff",overwrite = T)
+```
+
+
+```{r}
+data3b <- data2024
+min_max_transform <- function(raster_layer) {
+  min_val <- minValue(raster_layer) 
+  max_val <- maxValue(raster_layer) 
+  transformed_layer <- (raster_layer - min_val) / (max_val - min_val) 
+  return(transformed_layer)
+}
+mean_impute <- function(raster_layer) { 
+  mean_val <- cellStats(raster_layer, stat = 'mean', na.rm = TRUE)
+  raster_layer[is.na(raster_layer)] <- mean_val 
+  return(raster_layer) 
+}
+
+for (i in 1:9) {
+  data3b[[i]] <- min_max_transform(data3b[[i]])
+  data3b[[i]] <- mean_impute(data3b[[i]])
+}
+prediksi3b<-predict(data3b,model1,type='prob',progress='text')
+writeRaster(prediksi3b, "probcobadata2.tif", format = "GTiff",overwrite = T)
+response3b<-predict(data3b,model1,type='response',progress='text')
+writeRaster(response3b, "responsecobadata2.tif", format = "GTiff",overwrite = T)
+```
+
+```{r}
+# Load library yang dibutuhkan
+library(raster) # atau gunakan terra untuk performa yang lebih baik
+
+# Load raster hasil prediksi
+raster_pred <- raster("D:/undip/bismillah magang/BRGM/KUDETA ALAM SEMESTA/DATA/revisi/500/cobadata2024i.tif")
+
+# Reclassify raster (probability > 0.5 menjadi 1, sisanya 0)
+raster_binary <- raster_pred > 0.5
+
+# Hitung luasan dalam satuan km2
+area_pixel <- res(raster_pred)[1] * res(raster_pred)[2] / 1e6  # ukuran per piksel dalam km2
+total_area <- sum(raster_binary[], na.rm=TRUE) * area_pixel
+
+print(paste("Total area with probability > 0.5:", total_area, "km2"))
+
+```
+
+```{r}
+library(raster)
+
+# Load raster hasil prediksi
+raster_pred <- raster("D:/undip/bismillah magang/BRGM/KUDETA ALAM SEMESTA/DATA/revisi/500/cobadata2024i.tif")
+
+# Fungsi untuk menghitung area berdasarkan rentang probabilitas
+calculate_area <- function(raster, lower, upper = NULL) {
+  if (is.null(upper)) {
+    # Untuk rentang terbuka seperti >0.5
+    mask <- raster > lower
+  } else {
+    # Untuk rentang tertutup seperti 0.3-0.4
+    mask <- raster > lower & raster <= upper
+  }
+  
+  # Hitung area dalam km2
+  area_pixel <- res(raster)[1] * res(raster)[2] / 1e6  # ukuran piksel dalam km2
+  total_area <- sum(mask[], na.rm=TRUE) * area_pixel
+  return(total_area)
+}
+
+# Hitung luas untuk masing-masing rentang probabilitas
+area_0_0_3 <- calculate_area(raster_pred, 0, 0.2)
+area_0_3_0_4 <- calculate_area(raster_pred, 0.2, 0.4)
+area_greater_0_5 <- calculate_area(raster_pred, 0.4, 1)
+
+# Cetak hasil
+cat("Area 1:", area_0_0_3, "km2\n")
+cat("Area 2:", area_0_3_0_4, "km2\n")
+cat("Area 3:", area_greater_0_5, "km2\n")
+
+res(raster_pred)
+```
+
+
+
+
+
